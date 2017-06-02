@@ -25,3 +25,7 @@ Converts PNG image files to Prism Ark's EPA image format.
 ## PrismScriptSplit
 
 Two tools. PrismScriptSplit takes an input scenario.dat, textdata.dat, and filename.dat (normally stored in archive.dat) and creates a decompiled representation of the game script and saves it to scenario.txt. PrismScriptMerge takes a decompiled .txt file and creates a compiled scenario/textdata/filename dat files.
+
+## Old Tools
+
+A bunch of outdated tools that were used to work on scripts.
