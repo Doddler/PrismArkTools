@@ -1,0 +1,214 @@
+//definition style: (command) (id) (format)
+//format is a list of parameters, using the following format:
+//l is label, i is integer, h is a hex value, f is filename, s is string
+
+//command names are all inferred by their functionality
+//some commands don't have a known function, and are listed at the bottom
+
+jump				0x01000202	l
+call				0x01000302	l
+return				0x01000401	
+wait				0x01000502	i
+click				0x01000602	i
+jz					0x01000703	il
+gettime				0x01000801	
+waitfortime			0x01000a02	i
+scenename			0x01000d02	s
+choiceconfig		0x01010009	ffiiifff
+choicestart			0x01010101	
+choice				0x01010203	sl
+choiceexecute		0x01010301	
+setmenugroup		0x01020002	i
+setmenu				0x0102010A	iiiiiiifl
+checksave			0x01030202	i
+clearflags			0x02000002	i
+varset				0x02000103	ii
+varadd				0x02000203	ii
+varsub				0x02000303	ii
+varmul				0x02000403	ii
+vardiv				0x02000503	ii
+varmod				0x02000603	ii
+varinc				0x02000702	i
+vardec				0x02000802	i
+varbitwiseand		0x02000903	ii
+varbitwiseor		0x02000A03	ii
+varequals			0x02010003	ii
+varlessthan			0x02010103	ii
+vargreaterthan		0x02010203	ii
+varlessthanorequals	0x02010303	ii
+vargreaterorequals	0x02010403	ii
+varand				0x02010503	ii
+varor				0x02010603	ii
+varnotequals		0x02010703	ii
+layerset			0x04000004	ifi
+layerdel			0x04000102	i
+layeropacity		0x04000503	ii
+layerupdate			0x04010103	ii
+layertrans			0x04010505	iiii
+bgm					0x05000003	fi
+se					0x05010004	fii
+text				0x80000307	fssiii
+text2				0x80000406	issii	//not sure on the semantics here...
+fade				0x80010004	iii
+setbg				0x80010102	f
+color				0x03001103 	ih
+
+//unknown operations... I don't know what these do
+
+//who knows what these do
+Op00100102			0x00100102  i 		//calls sub_4407B0 with values 7, 11, 12, 13 based on input values 1, 2, 3, or 4
+Op00100202			0x00100202	i		//who knows
+Op00100302			0x00100302	i		//who knows
+Op00100402			0x00100402  i 		//dword_7624E8 = wParam; Posts thread message 505u with value val1 every 10ms until positive result received, or 1 second elapsed.
+Op00100502			0x00100502  i 		//dword_763498 = val1;
+Op00100602			0x00100602  i 		//Posts message 50B with value val1 to main thread if dword_760D08 is true
+Op00100702			0x00100702	i
+Op00100802			0x00100802	i
+Op00100902			0x00100902	i
+Op00100b02			0x00100b02  i 		//if val1 is 1, dword_76140C |= 0x80000, if val is 2, dword_76140C = (dword_76140C & 0xFFF3FFFF) | 0x40000
+Op00100c02			0x00100c02  i 		//if val is > 1, dword_76140C is set to |= 0x10000000, otherwise dword_76140C is set to 0xEFFFFFFF
+Op00100d02			0x00100d02  i 		//dword_7638F0 = val1;
+Op00100e02			0x00100e02  i 		//dword_76140C ^= (dword_76140C ^ (a2 << 24)) & 0xF000000;
+Op00100f02			0x00100f02  i 		//if val1 is true, dword_7624F4 |= 1, else dword_7624F4 &= 0xFFFFFFFE;
+Op00101002			0x00101002  i 		//if val1 is true, dword_7624F4 |= 2, else dword_7624F4 &= 0xFFFFFFFD;
+Op00102002			0x00102002  i 		//if val1 is true, dword_7624F4 |= 4, else dword_7624F4 &= 0xFFFFFFFB;
+
+//is this even a real category? Weird...
+Op00200101			0x00200101
+Op00200901			0x00200901
+Op00200e01			0x00200e01
+Op00300001			0x00300001
+Op00300101			0x00300101
+Op00300301			0x00300301
+
+//0x01 commands usually relate to script flow
+Op01000001			0x01000001
+Op01000902			0x01000902  i 		//dword_76140C ^= (unsigned __int8)((dword_76140C ^ 16 * val1) & 0xF0);
+Op01000f03			0x01000f03  ii		//sets the value of "dword_763D78[dword_6515CC] + 4 * val1" to val 2
+Op01001702			0x01001702	i
+Op01020203			0x01020203  ii		//something menu related?
+Op01020109			0x01020109	iiiiiifi
+Op01040002			0x01040002	i
+Op0104020a			0x0104020a	ifiiiiiii
+Op01040118			0x01040118	iffiiiiiiiiiiiiiiiiiiii	//what the fuck
+Op01001302			0x01001302	l
+Op01020402			0x01020402	i
+Op01030903			0x01030903	ii
+Op01030d02			0x01030d02	i
+Op01001201			0x01001201
+Op01001001			0x01001001
+Op01020502			0x01020502	i
+Op01001902			0x01001902	i
+Op01001801			0x01001801
+Op01030301			0x01030301
+Op01030002			0x01030002	i
+Op01030102			0x01030102	i
+Op01030405			0x01030405	iiii
+Op01030505			0x01030505	iiii
+Op01030706			0x01030706	iiiii
+Op01030806			0x01030806	iiiii
+Op01030a02			0x01030a02	i
+Op01001401			0x01001401
+
+
+//0x02 are variables and stuff
+Op02020002			0x02020002  i		//allocates a bunch of memory for something... can't tell!
+Op02020102			0x02020102  i		//similar to above... maybe menu related?
+Op02001105			0x02001105	iiii
+
+//0x03 are unknown!
+Op0300000b			0x0300000b	iiiiiiiihi
+Op03000102			0x03000102	i
+Op03000303			0x03000303  is		//unknown... seems to delete something?
+Op03000403			0x03000403	ii
+Op03000903			0x03000903	ii
+Op03001003			0x03001003	ii
+Op03001303			0x03001303  ii		//unknown... seems to delete something?
+Op03001403			0x03001403	ii
+Op03001503			0x03001503	ii
+Op00300201			0x00300201
+Op03000202			0x03000202	i
+
+
+//0x04 relate to layer control
+Op04000e03			0x04000e03  ii		//no clue! Something layer related, maybe with menus?
+Op04010001			0x04010001			//not a clue
+Op04020101			0x04020101			//not even close to a clue
+
+Op04010206			0x04010206	iiiii
+Op04010504			0x04010504	iii
+Op04010205			0x04010205	iiii
+Op04010604			0x04010604	iii
+Op04000804			0x04000804	iii
+Op04000703			0x04000703	ii
+Op04000304			0x04000304	iii
+Op04010605			0x04010605	iiii
+Op04010d04			0x04010d04	iii
+Op04020005			0x04020005	iiii
+Op04010906			0x04010906	iiiii
+Op04010808			0x04010808	iiiiiii
+Op04010b03			0x04010b03	ii
+Op04000902			0x04000902	f
+Op04010809			0x04010809	iiiiiiii
+Op04010705			0x04010705	iiii
+Op04011307			0x04011307	iiiiii
+Op04010704			0x04010704	iii
+Op04000603			0x04000603	ii
+Op04011308			0x04011308	iiiiiii
+Op04020305			0x04020305	iiii
+Op04020204			0x04020204	iii
+Op04010907			0x04010907	iiiiii
+Op04011409			0x04011409	iiiiiiii
+Op0401140a			0x0401140a	iiiiiiiii
+Op04010407			0x04010407	iiiiii
+Op04010d05			0x04010d05	iiii
+Op04010307			0x04010307	iiiiii
+Op04010308			0x04010308	iiiiiii
+Op04020406			0x04020406	iiiii
+Op04010406			0x04010406	iiiii
+Op04011508			0x04011508	iiiiiii
+
+//0x05 commands are all sound related
+Op05000102			0x05000102  i		//Calls PostThreadMessageA of type 0x513 with val1 param if it's a valid value, otherwise type 0x503 with no param if not. Sleeps for 10 ms 100 times. Then sets dword_76349C to 0.
+Op05000302			0x05000302	i
+Op05000504			0x05000504  fii		//probably probably bgm related, like a crossfade or something
+Op05010102			0x05010102  i		//Calls PostThreadMessageA of type 0x507 with val1 param and lparam of -1, and then sets 0x763D5C through to 0x763D74 to 0
+Op05020003			0x05020003  fi		//not sure
+Op05020101			0x05020101
+Op05020301			0x05020301			//clears memory at byte_760F40 with a length of 0x480
+Op05030002			0x05030002  f		//not really sure... but it takes a filename
+Op05020403			0x05020403	fi
+Op05000402			0x05000402	i
+
+//What
+Op0f000003			0x0f000003	ii
+
+//0x80 are visual and text box stuff
+Op80000104			0x80000104	iii
+Op80010204			0x80010204  ifi		//need to test this, I think set stands
+Op80010304			0x80010304	iii
+Op80010504			0x80010504	iih
+Op80010604			0x80010604  fii		//not sure
+Op80020002			0x80020002	f
+Op80020101			0x80020101
+Op80020201			0x80020201
+Op80020302			0x80020302	f
+Op80020501			0x80020501
+Op80020a02			0x80020a02	i
+Op80030005			0x80030005	ihii
+Op80030006 			0x80030006	ihiif 	//no clue
+Op80030602			0x80030602	f
+Op80030701			0x80030701
+Op80030a01			0x80030a01
+Op80030101			0x80030101
+Op80030201			0x80030201
+Op80030301			0x80030301
+Op80030401			0x80030401
+Op80030501			0x80030501
+Op80030901			0x80030901
+Op80040101			0x80040101
+Op80040201			0x80040201
+Op80040301			0x80040301			//not sure
+Op80020402			0x80020402	i
+Op80030b14			0x80030b14	iiiiiihhiiiihhiiiihh 	//AAAAH
+Op80030801			0x80030801
