@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -39,9 +40,13 @@ namespace PrismScriptSplit
 
 		public static int unknowns = 0;
 
+#if DEBUG
+        public static bool UseDebugPaths = true;
+#else
 	    public static bool UseDebugPaths = false;
+#endif
 
-		static string ReadString(int offset)
+        static string ReadString(int offset)
 		{
 			TextDataStream.Seek(offset, SeekOrigin.Begin);
 
@@ -178,6 +183,8 @@ namespace PrismScriptSplit
 		static void AddLabel(string strpos)
 		{
 			var pos = int.Parse(strpos);
+		    if (pos == 0)
+		        return;
 			if (!Labels.Contains(pos))
 				Labels.Add(pos);
 		}
@@ -246,7 +253,7 @@ namespace PrismScriptSplit
                             i++;
                             var dat = data[i];
 			                var type = func.Format[j];
-
+                            
 			                switch (type)
 			                {
                                 case 'i':
@@ -262,9 +269,16 @@ namespace PrismScriptSplit
                                     text.Add("\"" + FileNames[(int)data[i]-1] + "\"");
 			                        break;
                                 case 'l':
-                                    AddLabel(VLookup(dat));
-                                    text.Add($"label_{ VLookup(dat).ToHex()}");
-			                        break;
+                                    if (dat != 0)
+                                    {
+                                        AddLabel(VLookup(dat));
+                                        text.Add($"label_{VLookup(dat).ToHex()}");
+                                    }
+                                    else
+                                    {
+                                        text.Add(dat.ToString());
+                                    }
+                                    break;
                                 default:
                                     Console.WriteLine("Unexpected function format key " + type);
 			                        break;
@@ -321,9 +335,9 @@ namespace PrismScriptSplit
 	        Functions.Add(id, new FunctionDef(funcname, id, format));
 	    }
 
-	    static void SetHandlerData()
+	    static void SetHandlerData(string handlerpath)
 	    {
-	        var lines = File.ReadAllLines(@"D:\Dropbox\Mangagamer\PrismArk\functiondef.txt");
+	        var lines = File.ReadAllLines(handlerpath);
 
 	        foreach (var l in lines)
 	        {
@@ -347,7 +361,7 @@ namespace PrismScriptSplit
 
             if (UseDebugPaths)
 		    {
-		        SetHandlerData();
+		        SetHandlerData(@"D:\Dropbox\Projects\PrismArkTools\PrismScriptSplit\functiondef.txt");
                 ReadTextData(@"D:\Dropbox\Mangagamer\PrismArk\textdataorig.bin");
 		        ReadFileNameData(@"D:\Dropbox\Mangagamer\PrismArk\filenameorig.dat");
 		        Process(@"D:\Dropbox\Mangagamer\PrismArk\scenarioorig.dat", @"D:\Dropbox\Mangagamer\PrismArk\script.txt",
@@ -362,8 +376,8 @@ namespace PrismScriptSplit
 		    //if (args.Length >= 1)
 		    //    path = args[0];
             
-		    SetHandlerData();
-		    ReadTextData(Path.Combine(path, "textdata.dat"));
+		    SetHandlerData("functiondef.txt");
+		    ReadTextData(Path.Combine(path, "textdata.bin"));
 		    ReadFileNameData(Path.Combine(path, "filename.dat"));
 		    Process(Path.Combine(path, "scenario.dat"), Path.Combine(path, "scenario.txt"), debug);
         }

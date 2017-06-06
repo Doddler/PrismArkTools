@@ -304,6 +304,16 @@ namespace PrismScriptMerge
                     continue;
                 }
 
+                //if (c == '\\')
+                //{
+                //    if (i + 1 < line.Length && line[i + 1] == '"')
+                //    {
+                //        curword += '"';
+                //        i++;
+                //        continue;
+                //    }
+                //}
+
                 //group all text within quotes
                 if (c == '"')
                 {
@@ -315,6 +325,15 @@ namespace PrismScriptMerge
 
                     while (c != '"')
                     {
+                        if (c == '\\')
+                        {
+                            if (i + 1 < line.Length && line[i + 1] == '"')
+                            {
+                                c = '"';
+                                i++;
+                            }
+                        }
+
                         curword += c;
 
                         i++;
@@ -403,9 +422,14 @@ namespace PrismScriptMerge
                         break;
                     case 'l':
                         {
-                            var pos = (int)ScriptDataStream.Position;
-                            LabelCalls.Add(new Tuple<string, int>(val, pos));
-                            ScriptData.Write((uint)0x69696969);
+                            if (val == "0")
+                                AddNumber(val);
+                            else
+                            {
+                                var pos = (int) ScriptDataStream.Position;
+                                LabelCalls.Add(new Tuple<string, int>(val, pos));
+                                ScriptData.Write((uint) 0x69696969);
+                            }
                         }
                         break;
                     default:
@@ -517,8 +541,8 @@ namespace PrismScriptMerge
             EncryptTextStream(textdata);
 
             File.WriteAllBytes(Path.Combine(outputfolder, "scenario.dat"), ScriptDataStream.ToArray());
-            File.WriteAllBytes(Path.Combine(outputfolder, "textdata_debug.dat"), StringDataStream.ToArray());
-            File.WriteAllBytes(Path.Combine(outputfolder, "textdata.dat"), textdata);
+            File.WriteAllBytes(Path.Combine(outputfolder, "textdata_debug.bin"), StringDataStream.ToArray());
+            File.WriteAllBytes(Path.Combine(outputfolder, "textdata.bin"), textdata);
             File.WriteAllBytes(Path.Combine(outputfolder, "filename.dat"), FilenameDataStream.ToArray());
         }
 

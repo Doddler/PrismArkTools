@@ -51,6 +51,7 @@ text				0x80000307	fssiii
 text2				0x80000406	issii	//not sure on the semantics here...
 fade				0x80010004	iii
 setbg				0x80010102	f
+SetTextWindow		0x0300000b	iiiiiiiihi
 color				0x03001103 	ih
 
 //unknown operations... I don't know what these do
@@ -84,7 +85,7 @@ Op00300301			0x00300301
 //0x01 commands usually relate to script flow
 Op01000001			0x01000001
 Op01000902			0x01000902  i 		//dword_76140C ^= (unsigned __int8)((dword_76140C ^ 16 * val1) & 0xF0);
-Op01000f03			0x01000f03  ii		//sets the value of "dword_763D78[dword_6515CC] + 4 * val1" to val 2
+Op01000f03			0x01000f03  il		//sets the value of "dword_763D78[dword_6515CC] + 4 * val1" to val 2
 Op01001702			0x01001702	i
 Op01020203			0x01020203  ii		//something menu related?
 Op01020109			0x01020109	iiiiiifi
@@ -116,8 +117,7 @@ Op02020002			0x02020002  i		//allocates a bunch of memory for something... can't
 Op02020102			0x02020102  i		//similar to above... maybe menu related?
 Op02001105			0x02001105	iiii
 
-//0x03 are unknown!
-Op0300000b			0x0300000b	iiiiiiiihi
+//0x03 are probably text related things
 Op03000102			0x03000102	i
 Op03000303			0x03000303  is		//unknown... seems to delete something?
 Op03000403			0x03000403	ii
